@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de Busca - Fatec Franca</title>
+    <!--Chamando o Bootstrap (responsável por componentes de interface para front-end)--> 
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!--Chamando o Vue ( Que também é responsável por interface e componentes para usuário usando como base
+        HTML CSS e JAVASCRIPT)--> 
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!--Chamando Axios (Serve para implementação HTTPS)--> 
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <!--Criando classse para fazer a divisão dos conteúdos e estilização. Esse id que foi nomeado será usado para utilização do Vue--> 
+    <div class="container" id="searchApp">
+        <br />
+    <!--Puxando o logo da Fatec pelo link e alinhando ao centro-->
+    <h3 align="center">
+      <img src="https://site.fatecfranca.edu.br/images/logo-fatec-franca-15-anos.png" width=50% height=50%
+        alt="logo fatec"><br /><br />
+        <!--Deixando em negrito a busca de alunos para direcionar o usuário-->
+      <strong>Busca de Professores</strong>
+    </h3>
+    <br />
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-9">
+                        <h3 class="panel-title">Busca Professores</h3>
+                    </div>
+                    <div class="col-md-3" align="right">
+                        <!-- Abre um campo aonde o usuário deve preencher o nome que deseja procurar-->
+                        <input type="text" class="form-control input-sm" placeholder="Search Data" v-model="query"
+                            @keyup="fetchData()" />
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <!-- Divide a página em duas para para ficar mais fácil a leitura -->
+                        <tr>
+                            <th>First Name</th>
+                            <th>Endereço</th>
+                            <th>Curso</th>
+                            <th>Salário</th>
+                        </tr>
+                        <!-- Faz a busca pelo primeiro nome e pelos sobrenome chamando a informação do Banco-->
+                        <tr v-for="row in allData">
+                            <td>{{ row.nome }}</td>
+                            <td>{{ row.endereco }}</td>
+                            <td>{{ row.curso }}</td>
+                            <td>{{ row.salario }}</td>
+                        </tr>
+                        <tr v-if="nodata">
+                            <td colspan="2" align="center">No Data Found</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    // Criando a aplicação em VUE
+    var application = new Vue({
+        // Para a utilização do VUE todos os elementos tem que ficar dentro do mesmo ID para podermos utlizar todas as estilizações
+        // possíveis. Utlizando ele como um objeto para chamar seus métodos e funções 
+        el: '#searchApp',
+        // Adicionando variáveis 
+        data: {
+            allData: '',
+            query: '',
+            nodata: false
+        },
+        // Abrindo os métodos
+        methods: {
+            // Usando essa função para levar as informações do usuário par o busca.php usando um objeto
+            fetchData: function () {
+
+                // Chama a função que está no busca.php e usa para buscar informações no banco
+                axios.post('buscaprof.php', {
+                    query: this.query
+                // Compara as imformações inseridas pelo usuário com as do banco
+                // Caso retornem verdadeiro o usuário é direcionado para o cadastro dele, caso contrário retorna nulo
+                }).then(function (response) {
+                    if (response.data.length > 0) {
+                        application.allData = response.data;
+                        application.nodata = false;
+                    }
+                    else {
+                        application.allData = '';
+                        application.nodata = true;
+                    }
+                });
+            }
+        },
+        created: function () {
+            this.fetchData();
+        }
+    });
+
+</script>

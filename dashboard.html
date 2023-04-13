@@ -15,8 +15,11 @@
     </header>
     <main>
       <div class="container">
+        <button @click="goToCadastroProfessores">Cadastro de Professores</button>
+        <button @click="goToBuscaProfessores">Busca de Professores</button>
         <button @click="goToCadastroAlunos">Cadastro de Alunos</button>
         <button @click="goToBuscaAlunos">Busca de Alunos</button>
+        
       </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
@@ -24,14 +27,23 @@
 </html>
 
 <script>
+   // Abre a função VUE 
   new Vue({
+    // Define a variáveis
     el: "main",
+    // Abre os métodos e para serem redirecionadas para outras páginas
     methods: {
       goToCadastroAlunos() {
         window.open("cadastroAlunos.html", "_blank");
       },
       goToBuscaAlunos() {
         window.open("buscaAlunos.html", "_blank");
+      },
+      goToCadastroProfessores() {
+        window.open("cadastroProfessores.html", "_blank");
+      },
+      goToBuscaProfessores() {
+        window.open("buscaProfessores.html", "_blank");
       },
     },
   });
